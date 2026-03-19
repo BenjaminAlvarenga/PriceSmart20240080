@@ -1,4 +1,45 @@
-import mongoose from "mongoose";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     import mongoose from "mongoose";
 import { config } from "./src/config.js";
 
 mongoose.connect(config.db.URI);

@@ -17,12 +17,29 @@ reviewController.postReview = async (req, res) => {
     comment,
   });
 
-  await newReview.save()
+  await newReview.save();
 
-  res.json({message:"Review saved"})
+  res.json({ message: "Review saved" });
+};
+
+reviewController.putReview = async (req, res) => {
+  const { idEmployee, idProduct, rating, comment } = req.body;
+
+  await reviewModel.findByIdAndUpdate(req.params.id, {
+    idEmployee,
+    idProduct,
+    rating,
+    comment,
+  },{
+    new: true
+  });
+
+  res.json({message:"Review updated"})
 };
 
 reviewController.deleteReview = async (req, res) => {
-    await reviewModel.findByIdAndDelete(req.params.id);
-    res.json({message:"Review deleted"});
-}
+  await reviewModel.findByIdAndDelete(req.params.id);
+  res.json({ message: "Review deleted" });
+};
+
+export default reviewController;

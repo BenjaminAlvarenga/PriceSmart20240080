@@ -4,6 +4,7 @@ import branchRoutes from "./src/routes/branches.js";
 import employeeRoutes from "./src/routes/employees.js"
 import brandRoutes from "./src/routes/brands.js"
 import adminRoutes from "./src/routes/admins.js"
+import customerRoutes from "./src/routes/customers.js";
 
 const app = express();
 
@@ -15,5 +16,7 @@ app.use("/api/branches", branchRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/brands", brandRoutes)
 app.use("/api/admins", adminRoutes)
+app.use("/api/customers", customerRoutes)
+app.use("/api/registerCustomers")
 
 export default app;

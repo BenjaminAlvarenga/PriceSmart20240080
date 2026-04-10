@@ -3,29 +3,26 @@ import crypto from "crypto";
 import jsonwebtoken from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
+import employeeModel from "../models/employee.js";
 import customerModel from "../models/customers.js";
 
 import { config } from "../config.js";
 
-const registerCustomersController = {};
+const registerEmployeeController = {};
 
-registerCustomersController.post = async (req, res) => {
+registerEmployeeController.post = async (req, res) => {
   try {
-    //Solicitar todos los datos a guardar
-    const {
-      name,
-      lastName,
-      birthdate,
-      email,
-      password,
-      isVerified,
-      loginAttempts,
-      timeout,
-    } = req.body;
+    const { name, lastName, salary, DUI, phone, email, password, idBranches, isVerified } =
+      req.body;
 
-    //Verificamos si el correo ya esta registrado
+    //Verificamos si no es cliente
     const existsCustomer = await customerModel.findOne({ email });
     if (existsCustomer) {
+      return res.status(400).json({ message: "Invalid email" });
+    }
+
+    const existsEmployee = await employeeModel.findOne({ email });
+    if (existsEmployee) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
@@ -33,33 +30,36 @@ registerCustomersController.post = async (req, res) => {
     const passwordHash = await bcryptjs.hash(password, 10);
 
     //Guardamos todo en la base
-    const newCustomer = new customerModel({
+    const newEmployee = new employeeModel({
       name,
       lastName,
-      birthdate,
+      salary,
+      DUI,
+      phone,
       email,
       password: passwordHash,
-      isVerified,
-      loginAttempts,
-      timeout,
+      idBranches,
+      isVerified
     });
 
-    await newCustomer.save();
+    await newEmployee.save();
 
     //Generar codigo aleatorio
-    const verficationCode = crypto.randomBytes(3).toString("hex")
+    const verficationCode = crypto.randomBytes(3).toString("hex");
 
     //Guardamos el codigo en un token
     const tokenCode = jsonwebtoken.sign(
-        //Que guardamos?
-        {email, verficationCode},
-        //Secret key
-        config.JWT.secret,
-        //Cuando expira?
-        {expiresIn: "15m"}
+      //Que guardamos?
+      { email, verficationCode },
+      //Secret key
+      config.JWT.secret,
+      //Cuando expira?
+      { expiresIn: "15m" },
     );
 
-    res.cookie("verificationTokenCookie", tokenCode, {maxAge: 15 * 60 * 1000})
+    res.cookie("verificationTokenCookie", tokenCode, {
+      maxAge: 15 * 60 * 1000,
+    });
 
     //Envio de correo electronico
     //Transporter -> Quien envia el correo
@@ -67,37 +67,37 @@ registerCustomersController.post = async (req, res) => {
       service: "gmail",
       auth: {
         user: config.email.user_mail,
-        pass: config.email.user_password
-      }
-    })
+        pass: config.email.user_password,
+      },
+    });
 
     //Quien lo va a recibir
     const mailOptions = {
       from: config.email.user_mail,
       to: email,
       subject: "Verficación de cuenta",
-      text: "Para verificar tu cuenta, utiliza este código " + verficationCode + 
-      " expira en 15 minutos"
-    }
+      text:
+        "Para verificar tu cuenta, utiliza este código " +
+        verficationCode +
+        " expira en 15 minutos",
+    };
 
     //Enviar el correo electronico
     transporter.sendMail(mailOptions, (error, info) => {
-      if(error){
-        console.log("error " +  error)
-        return res.status(500).json({message:"Error"})
+      if (error) {
+        console.log("error " + error);
+        return res.status(500).json({ message: "Error" });
       }
 
-      res.status(200).json({message:"Email sent"})
-    })
-
-
+      res.status(200).json({ message: "Email sent" });
+    });
   } catch (error) {
     console.log("error " + error)
     return res.status(500).json({message:"Internal Server Error"})
   }
 };
 
-registerCustomersController.verifyCode = async (req, res) => {
+registerEmployeeController.verifyCode = async (req, res) => {
   try {
     //Solicitamos el codigo que el usuario recibió en el frontend
     const { verficationCodeRequest } = req.body
@@ -115,7 +115,7 @@ registerCustomersController.verifyCode = async (req, res) => {
     }
 
     //Si el codigo esta bien, se coloca el campo de isVerified a true
-    const customer = await customerModel.findOne({ email });
+    const customer = await employeeModelModel.findOne({ email });
     customer.isVerified = true
     await customer.save();
 
@@ -128,4 +128,4 @@ registerCustomersController.verifyCode = async (req, res) => {
   }
 }
 
-export default registerCustomersController;
+export default registerEmployeeController;

@@ -6,7 +6,6 @@ const router = e.Router();
 router
 .route("/")
 .get(employeeController.getEmployees)
-.post(employeeController.insertEmployees)
 
 router
 .route("/:id")

@@ -9,9 +9,11 @@ import registerCustomerRoutes from "./src/routes/registerCustomer.js"
 import loginCustomerRoutes from "./src/routes/loginCustomer.js";
 import logoutRoutes from "./src/routes/logout.js"
 import cookieParser from "cookie-parser";
+import limiter from "./src/middlewares/rateLimiter.js";
 
 const app = express();
 app.use(cookieParser());
+app.use(limiter);
 
 //Aceptar JSON en postman
 app.use(express.json());

@@ -8,6 +8,7 @@ import customerRoutes from "./src/routes/customers.js";
 import registerCustomerRoutes from "./src/routes/registerCustomer.js"
 import loginCustomerRoutes from "./src/routes/loginCustomer.js";
 import logoutRoutes from "./src/routes/logout.js"
+import ProviderRoutes from "./src/routes/providers.js"
 import cookieParser from "cookie-parser";
 import limiter from "./src/middlewares/rateLimiter.js";
 
@@ -27,5 +28,6 @@ app.use("/api/customers", customerRoutes)
 app.use("/api/registerCustomers", registerCustomerRoutes)
 app.use("/api/loginCustomer", loginCustomerRoutes)
 app.use("/api/logout", logoutRoutes)
+app.use("/api/providers", ProviderRoutes)
 
 export default app;

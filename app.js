@@ -12,6 +12,7 @@ import ProviderRoutes from "./src/routes/providers.js"
 import cartRoutes from "./src/routes/cart.js"
 import cookieParser from "cookie-parser";
 import wompiRoutes from "./src/routes/wompi.js"
+import deliveryDriverRoutes from "./src/routes/deliveryDriver.js";
 import limiter from "./src/middlewares/rateLimiter.js";
 
 const app = express();
@@ -33,5 +34,6 @@ app.use("/api/logout", logoutRoutes)
 app.use("/api/providers", ProviderRoutes)
 app.use("/api/cart", cartRoutes)
 app.use("/api/wompi", wompiRoutes)
+app.use("/api/deliveryDrivers", deliveryDriverRoutes)
 
 export default app;

@@ -4,7 +4,7 @@ import employeeModel from "../models/employee.js";
 
 employeeController.getEmployees = async (req, res) => {
   const employees = await employeeModel.find();
-  res.json(employees);
+  return res.status(200).json(employees);
 };
 
 employeeController.deleteEmployee = async (req, res) => {

@@ -14,6 +14,9 @@ import cookieParser from "cookie-parser";
 import wompiRoutes from "./src/routes/wompi.js"
 import deliveryDriverRoutes from "./src/routes/deliveryDriver.js";
 import limiter from "./src/middlewares/rateLimiter.js";
+import { validateAuthCookie } from "./src/middlewares/authMiddleware.js";
+import loginAdminRoutes from "./src/routes/loginAdmin.js";
+import registerAdminRoutes from "./src/routes/registerAdmin.js";
 
 const app = express();
 app.use(cookieParser());
@@ -24,15 +27,17 @@ app.use(express.json());
 
 app.use("/api/products", productRoutes);
 app.use("/api/branches", branchRoutes);
-app.use("/api/employees", employeeRoutes);
+app.use("/api/employees", validateAuthCookie(["admin"]), employeeRoutes);
 app.use("/api/brands", brandRoutes)
 app.use("/api/admins", adminRoutes)
 app.use("/api/customers", customerRoutes)
 app.use("/api/registerCustomers", registerCustomerRoutes)
+app.use("/api/registerAdmin", registerAdminRoutes)
 app.use("/api/loginCustomer", loginCustomerRoutes)
+app.use("/api/loginAdmin", loginAdminRoutes)
 app.use("/api/logout", logoutRoutes)
 app.use("/api/providers", ProviderRoutes)
-app.use("/api/cart", cartRoutes)
+app.use("/api/cart", validateAuthCookie(["admin", "customer"]) ,cartRoutes)
 app.use("/api/wompi", wompiRoutes)
 app.use("/api/deliveryDrivers", deliveryDriverRoutes)
 

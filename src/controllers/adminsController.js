@@ -12,42 +12,6 @@ adminsController.getAdmins = async (req, res) => {
   }
 };
 
-adminsController.postAdmin = async (req, res) => {
-  try {
-    let { name, email, password, isVerified } = req.body;
-
-    name = name?.trim();
-    password = password?.trim();
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    if (name.length < 3) {
-      return res.status(400).json({ message: "name too short" });
-    }
-
-    if (!email.includes("@")) {
-        console.log(email)
-      console.log("llega")
-      return res.status(400).json({ message: "email must be real" });
-    }
-
-    if (password.length < 10) {
-      return res.status(400).json({ message: "password too short" });
-    }
-
-
-    const newBrand = new adminModel({ name, email, password, isVerified });
-    await newBrand.save();
-
-    return res.status(201).json({ message: "Admin saved" });
-  } catch (error) {
-    console.log("Error" + error);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
 adminsController.deleteAdmin = async (req, res) => {
   try {
     const deletedAdmin = await adminModel.findByIdAndDelete(req.params.id);
